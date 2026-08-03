@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
-        AWS_DEFAULT_REGION    = 'us-east-1'
+        TF_IN_AUTOMATION = "true"
     }
 
     stages {
@@ -15,9 +13,27 @@ pipeline {
             }
         }
 
+        stage('Terraform Version') {
+            steps {
+                sh 'terraform version'
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 sh 'terraform init'
+            }
+        }
+
+        stage('Terraform Format Check') {
+            steps {
+                sh 'terraform fmt -check'
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
             }
         }
 
@@ -26,22 +42,19 @@ pipeline {
                 sh 'terraform plan'
             }
         }
-
-        stage('Terraform Apply') {
-            steps {
-                input message: 'Apply Terraform Changes?'
-                sh 'terraform apply -auto-approve'
-            }
-        }
     }
 
     post {
         success {
-            echo 'Infrastructure Created Successfully'
+            echo 'Terraform Pipeline Successful'
         }
 
         failure {
-            echo 'Pipeline Failed'
+            echo 'Terraform Pipeline Failed'
+        }
+
+        always {
+            cleanWs()
         }
     }
 }
