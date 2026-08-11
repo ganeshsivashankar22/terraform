@@ -1,0 +1,30 @@
+name: terraform CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      -main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: terraform initialize
+        uses: hasicorp/setup_terraform@v3
+
+      - name: terraform init
+        run:  terraform init
+
+      - name: terraform validate
+        run:  terraform validate
+
+      - name: terraform plan
+        run:  terraform plan
+
