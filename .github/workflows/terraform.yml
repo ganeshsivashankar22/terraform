@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: terraform initialize
-        uses: hasicorp/setup_terraform@v3
+        uses: hashicorp/setup_terraform@v3
 
       - name: terraform init
         run:  terraform init
